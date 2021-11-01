@@ -1,0 +1,74 @@
+{
+    "tag": "rele",
+    "patterns": ["How is your dad?",
+        "How is your sister?",
+        "How is your brother?",
+        "How is your mother?",
+        "How is your ",
+        "How is your dad?"
+
+          
+    ],
+    "responses": ["hi, good evening"
+
+          
+    ]
+},
+{
+    "tag": "detect_freant",
+    "patterns": ["Who is she?",
+        "Who is he?",
+        "what is this?",
+
+          
+    ],
+    "responses": [""
+
+          
+
+    ]
+},
+{
+    "tag": "log_off",
+    "patterns": ["log off", "sign out", "shutdown"
+          
+    ],
+    "responses": ["",
+
+          
+      
+    ]
+},
+{
+    "tag": "elon_musk",
+    "patterns": ["how is elon musk", "elon musk"
+          
+    ],
+    "responses": ["Elon Musk South African-born American entrepreneur who cofounded the electronic-payment firm PayPal and formed SpaceX, maker of launch vehicles and spacecraft."
+
+          
+      
+    ]
+},
+{
+    "tag": "jeff_bezos",
+    "patterns": ["how is jeff bezos", "jeff bezos"
+          
+    ],
+    "responses": ["Jeffrey Preston Bezos is an American entrepreneur, media proprietor, investor, and computer engineer. He is the founder and executive chairman of Amazon, where he previously served as the chairman, president, and CEO"
+
+          
+      
+    ]
+},
+{
+    "tag": "Bill_Gates",
+    "patterns": ["how is Bill Gates", "Bill Gates"
+          
+    ],
+    "responses": ["Bill Gates is an American business magnate, software developer, investor, author, and philanthropist. He is a co-founder of Microsoft Corporation"
+
+          
+      
+    ]
+}
