@@ -48,7 +48,7 @@ class SimpleFacerec:
 
     def detect_known_faces(self, frame):
         
-        data = pickle.loads(open('/media/nvidi/nvidia/robo_AI/dataset_faces.dat', "rb").read())
+        data = pickle.loads(open('/media/password/nvidia/robo_AI/dataset_faces.dat', "rb").read())
         #small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
         small_frame = cv2.resize(frame, (0, 0), fx=self.frame_resizing, fy=self.frame_resizing)
         # Find all the faces and face encodings in the current frame of video

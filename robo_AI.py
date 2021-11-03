@@ -1,176 +1,121 @@
-from datetime import date
-import RPi.GPIO as GPIO
-import time
-GPIO.setmode(GPIO.BOARD)
+from pickle import NONE
 
-GPIO.setwarnings(False)
-GPIO.setup(33, GPIO.OUT)
-# This class is used to control a DC motor.
-class Motor:
-    def __init__(self, EN, IN1, IN2):
-        self.speed = EN
-        self.forward = IN1
-        self.backward = IN2
-        self.pwm = None
+from cv2 import rotate
+from nltk.util import pr
 
-        # pins setup
-        GPIO.setup(self.speed, GPIO.OUT, initial=GPIO.LOW)
-        GPIO.setup(self.forward, GPIO.OUT, initial=GPIO.LOW)
-        GPIO.setup(self.backward, GPIO.OUT, initial=GPIO.LOW)
-        # pwm setup
-        self.pwm = GPIO.PWM(self.speed, 50) # frequency of pwm signal: 50Hz
-        self.pwm.start(0)
+from neuralintents import GenericAssistant
+import datetime
+import googlesamples.assistant.grpc.pushtotalk as pushtotalk
+import speech_recognition as sr
+import pyttsx3
+import webbrowser
+#import pywhatkit
+import datetime
+import  os
+import random
 
-    def goForward(self):
-        GPIO.output(self.forward, GPIO.HIGH)
-        GPIO.output(self.backward, GPIO.LOW)
+import re
+import requests
 
-    def goBackward(self):
-        GPIO.output(self.forward, GPIO.LOW)
-        GPIO.output(self.backward, GPIO.HIGH)
+from os import path
+import subprocess
+from gtts import gTTS
 
-    def stop(self):
-        GPIO.output(self.forward, GPIO.LOW)
-        GPIO.output(self.backward, GPIO.LOW)
-
-    def setSpeed(self, value):
-        # value must be between 0 and 100
-        # 0->min speed | 100 -> max speed
-        if value < 0:
-            value = 0
-        elif value > 100:
-            value = 100
-        self.pwm.ChangeDutyCycle(value)
-
-    def __del__(self):
-        # cleanup and leave pins in the safe state
-        self.stop()
-        self.pwm.stop()
-        GPIO.cleanup([self.speed, self.forward, self.backward])
-
-class DistanceSensor:
-    def __init__(self, TRIGGER = 11, ECHO=12):
-        self.trig = TRIGGER
-        self.echo = ECHO
-
-    # This function returns distance in cm or -1 value if the measurement failed.
-    # Distance measurement using a ultrasonic sensor is a time-sensitive work.
-    # So, because here runs Ubuntu OS, I think it depends by process scheduling.
-    # Sometimes it work with an error of max 2 cm, sometimes it doesn't.
-    # Doesn't work for distance < 4 cm (echo pulse is too fast ~230us).
-    def getDistance(self):
-        # pins setup
-        GPIO.setup(self.trig, GPIO.OUT, initial=GPIO.LOW)
-        GPIO.setup(self.echo, GPIO.IN)
-
-        # set Trigger to HIGH for 10 us
-        GPIO.output(self.trig, GPIO.HIGH)
-        time.sleep(0.00001) # 10 us
-        GPIO.output(self.trig, GPIO.LOW)
-
-        # start counting time at Echo rising edge
-        GPIO.wait_for_edge(self.echo, GPIO.RISING, timeout=100) # 100 ms
-        startTime = time.time()
-
-        # stop counting time at Echo falling edge
-        GPIO.wait_for_edge(self.echo, GPIO.FALLING, timeout=100) # 100 ms
-        elapsedTime = time.time() - startTime   # in seconds
-
-        distance = -1
-        # check if the measurement succeeded
-        if elapsedTime < 0.1:
-            # get the distance in cm using sonic speed (aprox. 34300 cm/s)
-            distance = (elapsedTime * 34300) / 2
-
-        GPIO.cleanup([self.trig, self.echo])
-    
-        return distance
-
-  
-def setServoAngle(angle):
-	pwm = GPIO.PWM(33, 100)
-	pwm.start(5)
-	dutyCycle = angle / 10 + 2.5
-	pwm.ChangeDutyCycle(dutyCycle)
-	time.sleep(0.3)
-	pwm.stop()
-area = ''
-area1 = ""
-def follow():
-    if area1 > area:
-        print("obj com")
-    if area1 < area:
-        print("obj appa")
+from robo_tts import take_command, talk, change_language, talk_gtts
 
 
-def main_roboAI():
-    setServoAngle(90)
-    leftMotor = Motor(32, 22, 24)
-    rightMotor = Motor(32, 19, 21)
-    speed = 25
-    leftMotor.setSpeed(speed)
-    rightMotor.setSpeed(speed)
-   
-    angle = 90
-    dis = DistanceSensor()
-    while True:
-        data = dis.getDistance()
-        #print(data)
-    
-        if data == -1:
-            continue
-        if data < 20:
-            print('stop')
-            leftMotor.stop()
-            rightMotor.stop()
-        if data >20:
-            #print(data)
-            print("goForward")
-            leftMotor.goForward()
-            rightMotor.goForward()
-        elif data < 20: 
-            print("stop")
-            setServoAngle(0)
-            time.sleep(1)
-            left_dis = dis.getDistance()
-            setServoAngle(90)
 
-            setServoAngle(180)
-            time.sleep(1)
-            right_dis = dis.getDistance()
-            setServoAngle(90)
 
-            if left_dis and right_dis< 10:
-                print("gobackword")
-                leftMotor.goBackward()
-                rightMotor.goBackward()
-                time.sleep(2)
-            elif left_dis > right_dis:
-                print("goleft")
-                leftMotor.stop()
-                rightMotor.goForward()
-                time.sleep(2)
-            elif left_dis < right_dis:
-                print('goright')
-                leftMotor.goForward()
-                rightMotor.stop()
-                time.sleep(2)  
-        if data > 80:
-            print(data)
-            speed += 10
-            if speed > 100:
-                speed = 100
-            leftMotor.setSpeed(speed)
-            rightMotor.setSpeed(speed)
-        elif data < 50:
-            print(data)
-            speed -= 10
-            if speed < 20:
-                speed = 20
-            leftMotor.setSpeed(speed)
-            rightMotor.setSpeed(speed)            
-        
-  
+def function_for_greetings():
+    print("You triggered the greetings intent!")
+    # Some action you want to take
+
+def function_for_stocks():
+    print("You triggered the stocks intent!")
+    # Some action you want to take
+def time__now():
+    hour=datetime.datetime.now().hour
+    if hour>=0 and hour<12:
+        print("Hello,Good Morning")
+
+    elif hour>=12 and hour<18:
+        print("Hello,Good Afternoon")
+
+    else:
+        print("Hello,Good Evening")
+
+def time_now():
+    time = datetime.datetime.now().strftime('%I:%M %p')
+    S_text = 'Current time is ' + time
+    if language != 'en':
+        change_language(S_text, language)
+    else:
+        talk(S_text)
+
+def call():
+    print("hi")
+
+
+def exit():
+    #elif 'exit' in voice_data or "goodbye" in voice_data or "ok bye" in voice_data or "stop" in voice_data:
+    print('Your robo is shutting down,Good bye')
+    S_text = 'your robo is shutting down,Good bye'
+    exit()
+def log_off():
+ 
+    shut=take_command()
+    if shut == 'yes':
+        print("Ok , your pc will log off in 10 sec make sure you exit from all applications")
+        S_text = "Ok , your pc will log off in 10 sec make sure you exit from all applications"
+        subprocess.call(["shutdown", "/l"])
+    else:
+        pass
+
+'''path_of_startup ='/media/nvidi/nvidia1/robo_AI/startup.txt'
+path_of_json = '/media/nvidi/nvidia1/robo_AI/Intent1.json'
+path_of_model = '/media/nvidi/nvidia1/robo_AI/neuralintents/test_model.h5'
+
+
+mappings = {'greeting' : function_for_greetings, 'stocks' : function_for_stocks, 'TimeQuery' : time_now}
+
+assistant = GenericAssistant(path_of_json, intent_methods=mappings ,model_name=path_of_model)
+#assistant.train_model()
+#assistant.save_model()
+assistant.load_model(path_of_model)'''
+
+
 if __name__ == "__main__":
-    main_roboAI()
+    with open(path_of_startup, "r") as m:
+        sents = m.read().split("\n\n")
+        se = random.choice(sents)
+    print(se)
+    talk_gtts(se,'en')
+    try:
+        while True:
+            messag = take_command()
+            
+            massage = messag[0]
+            language = messag[1]
+            if "rotate right" or "look right" in massage:
+                print("looking right")
+            elif "rotate left" or "look left" in massage:
+                print("looking right")
+            elif "detect this" in massage:
+                print("detecting")
+            elif "follow this" in massage:
+                print("follow")
+                
+            print(massage)
+            mess = assistant.request(massage)
+            print(mess)
+        
+            if mess is NONE:
+                pushtotalk.main()
+    
+            else:
+                talk_gtts(mess,language)
+                
+                pushtotalk.main()
+    except:
+        pass
 

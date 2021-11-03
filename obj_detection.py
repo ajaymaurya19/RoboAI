@@ -1,12 +1,9 @@
 #!/usr/bin/python3
 import jetson.inference
 import jetson.utils
-import multiprocessing as mp
-from threading import Thread
-from googlesamples.assistant.grpc.pushtotalk import main as goo
-from robo_AI import * 
 import cv2
 from main_video4 import *
+
 class mnSSD():
     def __init__(self, path, threshold):
         self.path = path
@@ -17,12 +14,11 @@ class mnSSD():
         imgCuda = jetson.utils.cudaFromNumpy(img)
         detections = self.net.Detect(imgCuda, overlay = "OVERLAY_NONE")
         objects = []
-        print(f'FPS: {int(self.net.GetNetworkFPS())}')
+        #print(f'FPS: {int(self.net.GetNetworkFPS())}')
         for d in detections:
             className = self.net.GetClassDesc(d.ClassID)
             objects.append([className,d])
-       
-           
+            
             if display:
                 cx, cy = int(d.Center[0]),int(d.Center[1])
                 x1,y1,x2,y2 = int(d.Left),int(d.Top),int(d.Right),int(d.Bottom)
@@ -34,7 +30,6 @@ class mnSSD():
                 cv2.putText(img, f'FPS: {int(self.net.GetNetworkFPS())}', (30,30),cv2.FONT_HERSHEY_DUPLEX,1,(255,0,0),2)
         return objects
 
-
 def main():
     cap = cv2.VideoCapture(0)
     cap.set(3,640)
@@ -42,16 +37,12 @@ def main():
     myModel = mnSSD("ssd-mobilenet-v2", 0.5)
     while True:
         _, img = cap.read()
-        _, img2= cap.read()
-        detect(img, img2)
         objects = myModel.detect(img,  True)
         if len(objects)!=0:
             print(objects[0][0])
             if objects[0][0]=="person":
                 #print(objects[0][0])
                 print(objects[0][0],img_reco(img, True))
-
- 
         cv2.imshow("Image", img)
         key = cv2.waitKey(1)
         if key == 27:
@@ -59,15 +50,6 @@ def main():
 
     cap.release()
     cv2.destroyAllWindows()
-t1 = mp.Process(target= main_roboAI)
-t2 = mp.Process(target=main)
 
-
-if __name__ == "__main__":
-    
-    t1.start()
-    t2.start()
-    goo()
-    #t2.start()
- 
-    #t2.join()
+if __name__=="__main__":
+    main()

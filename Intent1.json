@@ -44,22 +44,6 @@
             },
           
             {
-                  "tag": "CurrentHumanQuery",
-                  "patterns": [
-                        "What is my name?",
-                        "What do you call me?",
-                        "Who do you think I am?",
-                        "What do you think I am?",
-                        "Who are you talking to?",
-                        "What name do you call me by?",
-                        "Tell me my name"
-                  ],
-                  "responses": [
-                        "i am robo"]
-              
-              
-            },
-            {
                   "tag": "NameQuery",
                   "patterns": [
                         "What is your name?",
@@ -67,18 +51,7 @@
                         "What can I call you?",
                         "What do your friends call you?",
                         "Who are you?",
-                        "Tell me your name?"
-                  ],
-                  "responses": [
-                        "You can call me Geni",
-                        "You may call me Geni",
-                        "Call me Geni"
-                  ]
-           
-            },
-            {
-                  "tag": "RealNameQuery", 
-                  "patterns": [
+                        "Tell me your name?",
                         "What is your real name?",
                         "What is your real name please?",
                         "What's your real name?",
@@ -88,12 +61,13 @@
                         "Your real name please?"
                   ],
                   "responses": [
-                        "My name is GeniSys",
-                        "GeniSys",
-                        "My real name is GeniSys" 
+                        "You can call me Robo",
+                        "You may call me Robo",
+                        "Call me Robo"
                   ]
-                
+           
             },
+           
             { 
                   "tag": "TimeQuery",
                   "patterns": [
@@ -113,6 +87,37 @@
            
                         
                   },
+                  { 
+                  "tag": "TimeQuery",
+                  "patterns": [
+                        "What is the time?",
+                        "What's the time?",
+                        "Do you know what time it is?",
+                        "Do you know the time?",
+                        "Can you tell me the time?",
+                        "Tell me what time it is?",
+                        "Time"
+                  ],
+                  "responses": [
+                        "One moment",
+                        "One sec",
+                        "One second"
+                  ]
+           
+                        
+                  },{ 
+                        "tag": "move_cam",
+                        "patterns": [
+                               "look right"
+                        ],
+                        "responses": [
+                              "One moment",
+                              "One sec",
+                              "One second"
+                        ]
+                 
+                              
+                        },
                  
             {
                   "tag": "Thanks",
@@ -132,7 +137,10 @@
                   ]
             },
             {"tag": "options",
-                  "patterns": ["How you could help me?", "What you can do?", "What help you provide?", "How you can be helpful?", "What support is offered"],
+                  "patterns": ["How you could help me?",
+                         "What you can do?", "What help you provide?",
+                          "How you can be helpful?", 
+                          "What support is offered"],
                   "responses": ["I can guide you through Adverse drug reaction list, Blood pressure tracking, Hospitals and Pharmacies", "Offering support for Adverse drug reaction, Blood pressure, Hospitals and Pharmacies"],
                   "context": [""]
                  },
@@ -546,41 +554,9 @@
                   ]
          
             },
-            {
-                  "tag": "PodBayDoor",
-                  "patterns": [
-                        "Open the pod bay door",
-                        "Can you open the pod bay door",
-                        "Will you open the pod bay door",
-                        "Open the pod bay door please",
-                        "Can you open the pod bay door please",
-                        "Will you open the pod bay door please",
-                        "Pod bay door"
-                  ],
-                  "responses": [
-                        "I’m sorry, I’m afraid I can’t do that!"
-                  ]
-                
-                  },
+         
              
-            {
-                  "tag": "PodBayDoorResponse",
-                  "patterns": [
-                        "Why",
-                        "Why not",
-                        "Why can you not open the pod bay door",
-                        "Why will you not open the pod bay door",
-                        "Well why not",
-                        "Surely you can",
-                        "Tell me why"
-                  ],
-                  "responses": [
-                        "It is classified, I could tell you but I would have to kill you!",
-                        "Jim, I just don't have the power",
-                        "It's life Jim but not as we know it!",
-                        "System says no!"
-                  ]
-            },
+            
       {"tag": "computer",
             "patterns":["What is a computer?"], 
             "responses": [ "A computer is an electronic device which takes information in digital form and performs a series of operations based on predetermined instructions to give some output.", 

@@ -1,26 +1,25 @@
 import cv2
 import numpy as np
-from robo_AI import setServoAngle
+#from robo_AI import setServoAngle
 
-
-setServoAngle(0)
-setServoAngle(90)
+from robo_move3 import angle
 cap = cv2.VideoCapture(0)
 
-'''cap.set(3, 480)
-cap.set(4, 320)'''
+cap.set(3,640.0) #set the size
+cap.set(4,480.0)
 
 _, frame = cap.read()
 
-resize = cv2.resize(frame, (480, 320)) 
-rows, cols, _ = resize.shape
-print(resize.shape)
+angle(120, 70)
+rows, cols, _ = frame.shape
+print(frame.shape)
 x_medium = int(cols / 2)
 center = int(cols / 2)
-position = 90 # degrees
+pos_x = 70 # degrees
+pos_y =120
 while True:
     _, frame = cap.read()
-    frame = cv2.resize(frame, (480, 320))
+
     hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     
     # red color
@@ -39,10 +38,11 @@ while True:
         cv2.rectangle(frame, (x, y),(x+w, y+h),(0,255,0),2)
         
         x_medium = int((x + x + w) / 2)
+        y_medium = int((y+y+h)/2)
         break
     
     cv2.line(frame, (x_medium, 0), (x_medium, 480), (0, 255, 0), 2)
-    
+    cv2.line(frame, (0, y_medium), (640, y_medium), (0, 255, 0), 2)
     cv2.imshow("Frme", frame)
     cv2.imshow("Frame", red_mask)
     
@@ -54,13 +54,15 @@ while True:
     
     # Move servo motor
     if x_medium < center -40:
-        position += 5
-        setServoAngle(position) 
+        pos_x += 5
+        pos_y += 5
+        angle(pos_y, pos_x)
     elif x_medium > center + 40:
-        position -= 5
-        setServoAngle(position) 
+        pos_x -= 5
+        pos_y -=5
+        angle(pos_y, pos_x)
      
-    #pwm.setServoPosition(0, position)
+    #pwm.setServopos_x(0, position)
     
 cap.release()
 cv2.destroyAllWindows()

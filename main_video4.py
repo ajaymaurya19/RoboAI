@@ -1,3 +1,4 @@
+from pickle import NONE
 import cv2
 from simple_facerec import SimpleFacerec
 from datetime import datetime
@@ -22,13 +23,14 @@ def makeAttendanceEntry(name):
 def img_reco(img, display = False):
     face_locations, face_names = sfr.detect_known_faces(img)
     for face_loc, name in zip(face_locations, face_names):
+      
         y1, x2, y2, x1 = face_loc[0], face_loc[1], face_loc[2], face_loc[3]
         makeAttendanceEntry(name)
         if display:
             cv2.putText(img, name,(x1, y1 - 60), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 200), 2)
             cv2.rectangle(img, (x1-4, y1-54), (x2+4, y2+4), (0, 0, 200), 4)
 
-        return name
+        return face_loc
 
 
 def detect(img, img2):
@@ -56,7 +58,7 @@ if __name__=="__main__":
     # Load Camera
     cap = cv2.VideoCapture(0)
 
-    count = 0
+    '''count = 0
     face_id = 7
     while True:
         _, img = cap.read()
@@ -72,6 +74,28 @@ if __name__=="__main__":
         if key == 27:
             break
         elif count >= 100: # Take 30 face sample and stop video
+            break'''
+    while 1:
+        ret, img = cap.read()
+        #img = cv2.flip(img, -1)
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        faces =img_reco(img)
+        print(faces)
+        #y1, x2, y2, x1 = face_loc[0], face_loc[1], face_loc[2], face_loc[3]
+        if faces is not NONE:
+            for (y,w,h,x) in faces:
+                #servoPosition(int(x+w/2), int(y+h/2))
+                cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2)
+                '''roi_gray = gray[y:y+h, x:x+w]
+                roi_color = img[y:y+h, x:x+w]'''
+                #servoPosition(int(x+w/2), int(y+h/2))
+                print (int(x+w/2), int(y+h/2))
+            '''yes = eye_cascade.detectMultiScale(roi_gray)
+                for (ex,ey,ew,eh) in eyes:
+                    cv2.rectangle(roi_color,(ex,ey),(ex+ew,ey+eh),(0,255,0),2)'''
+        cv2.imshow('img',img)
+        k = cv2.waitKey(30) & 0xff
+        if k == 27: # press 'ESC' to quit
             break
     cap.release()
     cv2.destroyAllWindows()

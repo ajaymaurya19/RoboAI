@@ -2,12 +2,17 @@ import speech_recognition as sr
 import pyttsx3
 import  os
 import re
+import RPi.GPIO as GPIO
+import time
 from os import path
 import subprocess
 from gtts import gTTS
 from googletrans import Translator
 from playsound import playsound  
 #import wikipedia
+led =7
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(led, GPIO.OUT, initial=GPIO.HIGH)    
 
 listener = sr.Recognizer()
 engine = pyttsx3.init()
@@ -39,36 +44,40 @@ def there_exists(terms):
         if term in voice_data:
             return True
 def take_command():
-    client_id = ""  # this is the google api client id
-    client_secret = ""  # this is the google api client secret key
-    api_key = ""
+  
     r = sr.Recognizer()
     with sr.Microphone() as source:
         r.adjust_for_ambient_noise(source, duration=1)
         #print(r.energy_threshold)
-        print("Chucking rate: ", source.CHUNK)
-        print("format rate :", source.format)
+        #print("Chucking rate: ", source.CHUNK)
+        #print("format rate :", source.format)
 
-        print("Say something!...")
+        for i in range(7):
+            GPIO.output(led, GPIO.HIGH)
+            time.sleep(0.1)
+            GPIO.output(led,GPIO.LOW)
+            time.sleep(0.1)
         #print(r.energy_threshold)
         r.energy_threshold += 280
         # # print(r.adjust_for_ambient_noise(source,duration=1))
         audio = r.listen(source)
-
+        
+        GPIO.output(led, GPIO.HIGH)
         # Speech recognition using Google Speech Recognition
     try:
-        print("Parsing ...")  # Debugging To
+        #print("Parsing ...")  # Debugging To
         voice_data = r.recognize_google(audio)
-        output_language = translator.translate(voice_data)
+        '''output_language = translator.translate(voice_data)
         language = output_language.src
         if language != 'en':
             voice_data = output_language.text
-            print(voice_data)
-        return voice_data.lower(), language  # returning the text which has been inputed.
-
+            print(voice_data)'''
+        language = "en"
+        #return voice_data.lower(), language  # returning the text which has been inputed.
+        return voice_data
 
     except sr.UnknownValueError:
-        print("Google Speech Recognition could not understand audio")
+        talk_gtts("Speech Recognition could not understand audio","en")
     except sr.RequestError as e:
         print("Could not request results from Google Speech Recognition service; {0}".format(e))
     
